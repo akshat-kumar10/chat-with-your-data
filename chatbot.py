@@ -1,6 +1,3 @@
-# This script creates a web-based chatbot with a Gradio frontend
-# that can answer questions about a CSV file using the Gemini API.
-
 import os
 import pandas as pd
 import google.generativeai as genai
@@ -60,7 +57,6 @@ def get_ai_response(csv_data, user_question):
         
     try:
         # Create an instance of the Generative Model.
-        # Changed the model name to gemini-1.0-pro
         model = genai.GenerativeModel('gemini-1.0-pro')
 
         # Create a detailed prompt to guide the AI.
@@ -96,9 +92,7 @@ def chatbot_interface(csv_file_path, user_question):
     else:
         return csv_data
 
-# Create the Gradio interface.
-# The `gr.themes.Monochrome` theme with `font` and `font_monospace` parameters
-# is used for a cleaner look.
+# Gradio interface.
 iface = gr.Interface(
     fn=chatbot_interface,
     inputs=[
@@ -115,4 +109,5 @@ iface = gr.Interface(
 )
 
 if __name__ == "__main__":
+
     iface.launch()
