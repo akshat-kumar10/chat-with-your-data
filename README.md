@@ -53,6 +53,7 @@ python chatbot.py
 This will launch a local web server. Open the URL provided in your terminal (usually http://127.0.0.1:7860) in your web browser to access the chatbot interface. 🌐
 
 On the web page, click the "Upload a CSV File" button to upload your data. 📁
+There is already a sample CSV file provided in the repository.
 
 In the text box below, enter your question about the CSV data. 💬
 
