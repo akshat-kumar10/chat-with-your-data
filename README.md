@@ -1,118 +1,59 @@
-# This script creates a web-based chatbot with a Gradio frontend
-# that can answer questions about a CSV file using the Gemini API.
+# 📊 CSV Chatbot with Gradio and Gemini
 
-import os
-import pandas as pd
-import google.generativeai as genai
-import gradio as gr
-from dotenv import load_dotenv
+This is a **simple yet powerful chatbot** that allows you to ask questions about your CSV data in natural language. It uses a web-based interface built with **Gradio** and leverages the power of the **Google Gemini API** to analyse the data and provide accurate answers.
 
-# Load environment variables from the .env file.
-load_dotenv()
+---
 
-# Get the API key from the environment variables.
-api_key = os.getenv("GEMINI_API_KEY")
+## ✨ Features
 
-if not api_key:
-    # Use a more user-friendly message for the Gradio interface
-    api_key = "placeholder" # Set a placeholder to prevent immediate error on import
+- **📁 CSV Upload:** Easily upload a CSV file directly through the web interface.  
+- **💬 Natural Language Queries:** Ask questions about your data as if you were talking to a data analyst.  
+- **🤖 Gemini API Integration:** The chatbot uses the `gemini-1.0-pro` model to understand and process your queries.  
+- **🖥️ User-Friendly UI:** The Gradio frontend provides a clean and intuitive interface for a seamless user experience.  
 
-# Configure the Gemini API with your key.
-genai.configure(api_key=api_key)
+---
 
-def load_csv_data(file_path):
-    """
-    Loads a CSV file into a pandas DataFrame and returns it as a string.
+## 🛠️ Prerequisites
 
-    Args:
-        file_path (str): The path to the CSV file.
+Before running the application, ensure you have the following installed:
 
-    Returns:
-        str: A string representation of the CSV data, or None if the file is not found.
-    """
-    if not file_path:
-        return None
-    try:
-        df = pd.read_csv(file_path)
-        # Convert the DataFrame to a string for the AI to process.
-        return df.to_string(index=False)
-    except FileNotFoundError:
-        return "Error: The file was not found."
-    except Exception as e:
-        return f"An error occurred while loading the CSV: {e}"
+- Python 3.6 or higher 🐍  
+- A **Google Gemini API Key** 🔑  
 
-def get_ai_response(csv_data, user_question):
-    """
-    Sends the CSV data and user question to the Gemini API and returns the response.
+---
 
-    Args:
-        csv_data (str): The string representation of the CSV file.
-        user_question (str): The user's question about the data.
+## 📦 Installation
 
-    Returns:
-        str: The AI's answer, or an error message if the API call fails.
-    """
-    if not csv_data:
-        return "Please upload a valid CSV file first."
-    
-    if not user_question:
-        return "Please enter a question."
-        
-    try:
-        # Create an instance of the Generative Model.
-        # Changed the model name to gemini-1.0-pro
-        model = genai.GenerativeModel('gemini-1.0-pro')
+1. Clone this repository or download the project files.  
+2. Navigate to the project directory in your terminal.  
+3. Install the required Python libraries using the `requirements.txt` file:
 
-        # Create a detailed prompt to guide the AI.
-        prompt = (
-            "You are a data analysis assistant. You will be given CSV data and a question about it. "
-            "Your task is to provide a concise and accurate answer based *only* on the provided data. "
-            "If the answer is not in the data, state that you cannot find it. "
-            f"\n\n--- CSV Data ---\n{csv_data}\n\n--- User Question ---\n{user_question}\n\n--- Answer ---"
-        )
-        
-        response = model.generate_content(prompt)
-        
-        return response.text.strip()
+```bash
+pip install -r requirements.txt
+```
 
-    except Exception as e:
-        return f"An error occurred with the Gemini API: {e}"
+## ⚙️ Setup
 
-def chatbot_interface(csv_file_path, user_question):
-    """
-    Main function for the Gradio interface.
-    
-    Args:
-        csv_file_path (str): The temporary path to the uploaded CSV file.
-        user_question (str): The user's question.
-    """
-    # Check if the API key is valid before proceeding
-    if os.getenv("GEMINI_API_KEY") is None:
-        return "Error: GEMINI_API_KEY not found in the .env file. Please add your key."
-        
-    csv_data = load_csv_data(csv_file_path)
-    if csv_data and not csv_data.startswith("Error"):
-        return get_ai_response(csv_data, user_question)
-    else:
-        return csv_data
+Create a file named .env in the same directory as chatbot.py.
 
-# Create the Gradio interface.
-# The `gr.themes.Monochrome` theme with `font` and `font_monospace` parameters
-# is used for a cleaner look.
-iface = gr.Interface(
-    fn=chatbot_interface,
-    inputs=[
-        gr.File(label="Upload a CSV File"),
-        gr.Textbox(label="Enter your question about the CSV data"),
-    ],
-    outputs="text",
-    title="CSV Chatbot with Gemini",
-    description="Ask questions about your uploaded CSV file. The bot will answer based on the data you provide.",
-    theme=gr.themes.Monochrome(
-        font=["Garamond", "serif"],
-        font_mono=["Garamond", "serif"]
-    )
-)
+Add your Gemini API key to this file in the following format:
+```bash
+GEMINI_API_KEY="YOUR_API_KEY_HERE"
+```
 
-if __name__ == "__main__":
-    iface.launch()
+Replace "YOUR_API_KEY_HERE" with your actual key. 🔑
+
+##🚀 Usage
+
+To start the chatbot, run the Python script from your terminal:
+```bash
+python chatbot.py
+```
+
+This will launch a local web server. Open the URL provided in your terminal (usually http://127.0.0.1:7860) in your web browser to access the chatbot interface. 🌐
+
+On the web page, click the "Upload a CSV File" button to upload your data. 📁
+
+In the text box below, enter your question about the CSV data. 💬
+
+The chatbot will process your request and display the answer. ✅
